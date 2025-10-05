@@ -42,3 +42,9 @@ next-env.d.ts
 
 .env
 .idea
+
+# Flask conversion - ignore original Node.js code
+/node/
+
+# Temporary files
+/tmp/
