@@ -48,3 +48,9 @@ next-env.d.ts
 
 # Temporary files
 /tmp/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
