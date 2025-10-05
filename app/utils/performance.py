@@ -51,6 +51,17 @@ def invalidate_cache(pattern=None):
     
     current_app.logger.debug(f"Invalidated {len(keys_to_remove)} cache entries matching '{pattern}'")
 
+def clear_all_cache():
+    """Clear all cache entries"""
+    _cache.clear()
+    _cache_ttl.clear()
+
+def reset_rate_limiters():
+    """Reset all rate limiters"""
+    global api_rate_limiter, message_rate_limiter
+    api_rate_limiter.requests.clear()
+    message_rate_limiter.requests.clear()
+
 def get_cache_stats():
     """Get cache statistics"""
     total_entries = len(_cache)

@@ -20,11 +20,11 @@ def run_command(command, description):
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     
     if result.returncode != 0:
-        print(f"❌ {description} FAILED")
+        print(f"FAILED: {description}")
         print(f"Error: {result.stderr}")
         return False
     else:
-        print(f"✅ {description} PASSED")
+        print(f"PASSED: {description}")
         if result.stdout:
             print(f"Output: {result.stdout}")
         return True
@@ -121,8 +121,8 @@ def main():
     os.environ['LETTA_API_KEY'] = 'test-api-key'
     os.environ['LETTA_BASE_URL'] = 'http://test-letta-server:8283'
     
-    print(f"🧪 Running tests in mode: {args.mode}")
-    print(f"📁 Working directory: {os.getcwd()}")
+    print(f"Running tests in mode: {args.mode}")
+    print(f"Working directory: {os.getcwd()}")
     
     success = True
     
@@ -150,10 +150,10 @@ def main():
         success = check_imports()
     
     if success:
-        print(f"\n🎉 All {args.mode} tests passed!")
+        print(f"\nSUCCESS: All {args.mode} tests passed!")
         sys.exit(0)
     else:
-        print(f"\n💥 {args.mode} tests failed!")
+        print(f"\nFAILED: {args.mode} tests failed!")
         sys.exit(1)
 
 if __name__ == '__main__':

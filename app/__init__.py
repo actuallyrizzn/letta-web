@@ -5,7 +5,7 @@ from datetime import datetime
 
 def create_app(config_name='default'):
     """Application factory pattern"""
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder='templates', static_folder='static')
     app.config.from_object(config[config_name])
     
     # Initialize Flask-Session

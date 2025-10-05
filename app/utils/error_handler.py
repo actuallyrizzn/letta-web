@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, jsonify, current_app
 from functools import wraps
 import traceback
 import logging
+import requests
 
 error_bp = Blueprint('errors', __name__)
 
@@ -22,6 +23,9 @@ def handle_api_error(f):
             return jsonify({'error': 'Resource not found'}), 404
         except ConnectionError as e:
             current_app.logger.error(f'Connection error in {f.__name__}: {e}')
+            return jsonify({'error': 'Service temporarily unavailable'}), 503
+        except requests.exceptions.RequestException as e:
+            current_app.logger.error(f'Letta API error in {f.__name__}: {e}')
             return jsonify({'error': 'Service temporarily unavailable'}), 503
         except Exception as e:
             current_app.logger.error(f'Unexpected error in {f.__name__}: {e}')

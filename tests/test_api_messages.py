@@ -39,7 +39,7 @@ class TestMessagesAPI:
             response = client_with_session.get('/api/agents/agent-1/messages',
                                              headers={'HX-Request': 'true'})
             assert response.status_code == 200
-            assert b'messages-list' in response.data
+            assert b'max-w-xs lg:max-w-md' in response.data  # Check for message styling
     
     def test_get_agent_messages_unauthorized(self, client_with_session):
         """Test message retrieval for unauthorized agent"""

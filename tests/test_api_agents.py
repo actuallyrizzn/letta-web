@@ -9,33 +9,37 @@ class TestAgentsAPI:
     def test_get_agents_success(self, client_with_session, mock_letta_responses):
         """Test successful agents list retrieval"""
         with patch('app.routes.agents.LettaClient') as mock_client:
-            mock_instance = MagicMock()
-            mock_instance.list_agents.return_value = mock_letta_responses['agents']
-            mock_client.return_value = mock_instance
-            
-            response = client_with_session.get('/api/agents')
-            assert response.status_code == 200
-            
-            data = json.loads(response.data)
-            assert isinstance(data, list)
-            assert len(data) == 1
-            assert data[0]['id'] == 'agent-1'
+            with patch('app.routes.agents.api_rate_limiter') as mock_rate_limiter:
+                mock_rate_limiter.is_allowed.return_value = True
+                mock_instance = MagicMock()
+                mock_instance.list_agents.return_value = mock_letta_responses['agents']
+                mock_client.return_value = mock_instance
+                
+                response = client_with_session.get('/api/agents')
+                assert response.status_code == 200
+                
+                data = json.loads(response.data)
+                assert isinstance(data, list)
+                assert len(data) == 1
+                assert data[0]['id'] == 'agent-1'
     
     def test_get_agents_htmx_request(self, client_with_session, mock_letta_responses):
         """Test agents list with HTMX request"""
         with patch('app.routes.agents.LettaClient') as mock_client:
-            mock_instance = MagicMock()
-            mock_instance.list_agents.return_value = mock_letta_responses['agents']
-            mock_client.return_value = mock_instance
-            
-            response = client_with_session.get('/api/agents', 
-                                             headers={'HX-Request': 'true'})
-            assert response.status_code == 200
-            assert b'agent-item' in response.data
+            with patch('app.routes.agents.api_rate_limiter') as mock_rate_limiter:
+                mock_rate_limiter.is_allowed.return_value = True
+                mock_instance = MagicMock()
+                mock_instance.list_agents.return_value = mock_letta_responses['agents']
+                mock_client.return_value = mock_instance
+                
+                response = client_with_session.get('/api/agents', 
+                                                 headers={'HX-Request': 'true'})
+                assert response.status_code == 200
+                assert b'agent-item' in response.data
     
-    def test_get_agents_no_user_id(self, client):
+    def test_get_agents_no_user_id(self, client_no_session):
         """Test agents list without user ID"""
-        response = client.get('/api/agents')
+        response = client_no_session.get('/api/agents')
         assert response.status_code == 400
         
         data = json.loads(response.data)
@@ -45,12 +49,14 @@ class TestAgentsAPI:
     def test_get_agents_letta_error(self, client_with_session):
         """Test agents list with Letta server error"""
         with patch('app.routes.agents.LettaClient') as mock_client:
-            mock_instance = MagicMock()
-            mock_instance.list_agents.side_effect = Exception('Connection failed')
-            mock_client.return_value = mock_instance
-            
-            response = client_with_session.get('/api/agents')
-            assert response.status_code == 500
+            with patch('app.routes.agents.api_rate_limiter') as mock_rate_limiter:
+                mock_rate_limiter.is_allowed.return_value = True
+                mock_instance = MagicMock()
+                mock_instance.list_agents.side_effect = Exception('Connection failed')
+                mock_client.return_value = mock_instance
+                
+                response = client_with_session.get('/api/agents')
+                assert response.status_code == 500
     
     def test_create_agent_success(self, client_with_session, sample_agent_data):
         """Test successful agent creation"""
@@ -65,9 +71,9 @@ class TestAgentsAPI:
             data = json.loads(response.data)
             assert data['id'] == 'new-agent-123'
     
-    def test_create_agent_no_user_id(self, client):
+    def test_create_agent_no_user_id(self, client_no_session):
         """Test agent creation without user ID"""
-        response = client.post('/api/agents')
+        response = client_no_session.post('/api/agents')
         assert response.status_code == 400
     
     def test_get_agent_by_id_success(self, client_with_session, mock_letta_responses):
@@ -151,17 +157,19 @@ class TestAgentsAPI:
     def test_caching(self, client_with_session, mock_letta_responses):
         """Test API response caching"""
         with patch('app.routes.agents.LettaClient') as mock_client:
-            mock_instance = MagicMock()
-            mock_instance.list_agents.return_value = mock_letta_responses['agents']
-            mock_client.return_value = mock_instance
-            
-            # First request
-            response1 = client_with_session.get('/api/agents')
-            assert response1.status_code == 200
-            
-            # Second request (should be cached)
-            response2 = client_with_session.get('/api/agents')
-            assert response2.status_code == 200
-            
-            # Verify client was only called once due to caching
-            assert mock_instance.list_agents.call_count == 1
+            with patch('app.routes.agents.api_rate_limiter') as mock_rate_limiter:
+                mock_rate_limiter.is_allowed.return_value = True
+                mock_instance = MagicMock()
+                mock_instance.list_agents.return_value = mock_letta_responses['agents']
+                mock_client.return_value = mock_instance
+                
+                # First request
+                response1 = client_with_session.get('/api/agents')
+                assert response1.status_code == 200
+                
+                # Second request (should be cached)
+                response2 = client_with_session.get('/api/agents')
+                assert response2.status_code == 200
+                
+                # Verify client was only called once due to caching
+                assert mock_instance.list_agents.call_count == 1

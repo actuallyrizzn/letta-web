@@ -51,15 +51,24 @@ class TestPerformanceTests:
         """Test memory usage doesn't grow excessively"""
         import psutil
         import os
+        from unittest.mock import patch
         
         process = psutil.Process(os.getpid())
         initial_memory = process.memory_info().rss
         
-        # Perform many operations
-        with app.test_client() as client:
-            for i in range(100):
-                with client.session_transaction() as sess:
-                    sess['test_key'] = f'test_value_{i}'
+        # Mock the Letta client to avoid actual API calls
+        with patch('app.routes.agents.LettaClient') as mock_client:
+            mock_instance = mock_client.return_value
+            mock_instance.get_agents.return_value = {'agents': []}
+            
+            # Perform many operations
+            with app.test_client() as client:
+                # Set test user ID directly on app
+                app._test_user_id = 'test-user-123'
+                
+                for i in range(100):
+                    response = client.get('/api/agents')
+                    assert response.status_code == 200
         
         final_memory = process.memory_info().rss
         memory_increase = final_memory - initial_memory
@@ -67,7 +76,7 @@ class TestPerformanceTests:
         # Memory increase should be reasonable (less than 10MB)
         assert memory_increase < 10 * 1024 * 1024, f"Memory increased by {memory_increase / 1024 / 1024:.2f}MB"
     
-    def test_cache_performance(self):
+    def test_cache_performance(self, app):
         """Test cache performance and efficiency"""
         call_count = 0
         
@@ -78,19 +87,20 @@ class TestPerformanceTests:
             time.sleep(0.1)  # Simulate expensive operation
             return x * 2
         
-        # First call should be slow
-        start_time = time.time()
-        result1 = expensive_operation(5)
-        first_call_time = time.time() - start_time
-        
-        # Second call should be fast (cached)
-        start_time = time.time()
-        result2 = expensive_operation(5)
-        second_call_time = time.time() - start_time
-        
-        assert result1 == result2 == 10
-        assert call_count == 1  # Function only called once
-        assert second_call_time < first_call_time * 0.1  # Cached call should be much faster
+        with app.app_context():
+            # First call should be slow
+            start_time = time.time()
+            result1 = expensive_operation(5)
+            first_call_time = time.time() - start_time
+            
+            # Second call should be fast (cached)
+            start_time = time.time()
+            result2 = expensive_operation(5)
+            second_call_time = time.time() - start_time
+            
+            assert result1 == result2 == 10
+            assert call_count == 1  # Function only called once
+            assert second_call_time < first_call_time * 0.1  # Cached call should be much faster
     
     def test_rate_limiter_performance(self):
         """Test rate limiter performance under load"""
@@ -300,10 +310,12 @@ class TestLoadTests:
     
     def test_concurrent_users(self, app):
         """Test application under concurrent user load"""
+        from unittest.mock import patch
+        
         def simulate_user():
             with app.test_client() as client:
-                with client.session_transaction() as sess:
-                    sess['letta_uid'] = f'user-{threading.current_thread().ident}'
+                # Set test user ID directly on app
+                app._test_user_id = f'user-{threading.current_thread().ident}'
                 
                 responses = []
                 for i in range(10):  # 10 requests per user
@@ -312,10 +324,15 @@ class TestLoadTests:
                 
                 return responses
         
-        # Simulate 20 concurrent users
-        with ThreadPoolExecutor(max_workers=20) as executor:
-            futures = [executor.submit(simulate_user) for _ in range(20)]
-            results = [future.result() for future in as_completed(futures)]
+        # Mock the Letta client to avoid actual API calls
+        with patch('app.routes.agents.LettaClient') as mock_client:
+            mock_instance = mock_client.return_value
+            mock_instance.get_agents.return_value = {'agents': []}
+            
+            # Simulate 20 concurrent users
+            with ThreadPoolExecutor(max_workers=20) as executor:
+                futures = [executor.submit(simulate_user) for _ in range(20)]
+                results = [future.result() for future in as_completed(futures)]
         
         # All requests should complete (even if some fail)
         assert len(results) == 20

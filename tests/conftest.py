@@ -1,9 +1,21 @@
 import os
 import pytest
+from unittest.mock import patch
 from app import create_app
 from app.config import config
 
-@pytest.fixture(scope='session')
+@pytest.fixture(autouse=True)
+def clear_global_state():
+    """Clear global state before each test"""
+    from app.utils.performance import clear_all_cache, reset_rate_limiters
+    clear_all_cache()
+    reset_rate_limiters()
+    yield
+    # Clean up after test
+    clear_all_cache()
+    reset_rate_limiters()
+
+@pytest.fixture
 def app():
     """Create test application"""
     app = create_app('testing')
@@ -13,7 +25,8 @@ def app():
         'LETTA_BASE_URL': 'http://test-letta-server:8283',
         'USE_COOKIE_BASED_AUTHENTICATION': True,
         'WTF_CSRF_ENABLED': False,  # Disable CSRF for testing
-        'SECRET_KEY': 'test-secret-key'
+        'SECRET_KEY': 'test-secret-key',
+        'SESSION_TYPE': 'null'  # Use null session for testing
     })
     return app
 
@@ -25,11 +38,24 @@ def client(app):
 @pytest.fixture
 def client_with_session(app):
     """Create test client with session"""
-    with app.test_client() as client:
-        with client.session_transaction() as sess:
-            sess['letta_uid'] = 'test-user-123'
-            sess['created_at'] = '2024-01-01T00:00:00'
-        yield client
+    client = app.test_client()
+    # Set the test user ID on the app
+    app._test_user_id = 'test-user-123'
+    yield client
+    # Clean up
+    if hasattr(app, '_test_user_id'):
+        delattr(app, '_test_user_id')
+
+@pytest.fixture
+def client_no_session(app):
+    """Create test client without session"""
+    client = app.test_client()
+    # Set the test user ID to None on the app
+    app._test_user_id = None
+    yield client
+    # Clean up
+    if hasattr(app, '_test_user_id'):
+        delattr(app, '_test_user_id')
 
 @pytest.fixture
 def mock_letta_responses():

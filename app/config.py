@@ -21,8 +21,24 @@ class ProductionConfig(Config):
     DEBUG = False
     FLASK_ENV = 'production'
 
+class TestingConfig(Config):
+    """Testing configuration"""
+    TESTING = True
+    DEBUG = False
+    FLASK_ENV = 'testing'
+    WTF_CSRF_ENABLED = False
+    LETTA_API_KEY = 'test-api-key'
+    LETTA_BASE_URL = 'http://test-letta-server:8283'
+    USE_COOKIE_BASED_AUTHENTICATION = True
+    
+    # Session configuration for testing
+    SESSION_TYPE = 'null'  # Use null session for testing
+    SESSION_PERMANENT = False
+    SESSION_USE_SIGNER = True
+
 config = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,
+    'testing': TestingConfig,
     'default': DevelopmentConfig
 }
