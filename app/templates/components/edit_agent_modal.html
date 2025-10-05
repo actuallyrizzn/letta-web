@@ -1,0 +1,150 @@
+<!-- Edit Agent Modal -->
+<div id="edit-agent-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Edit Agent</h3>
+                    <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <form id="edit-agent-form" 
+                      hx-put="/api/agents/{agent_id}" 
+                      hx-target="#agent-details" 
+                      hx-swap="innerHTML"
+                      hx-indicator="#edit-spinner">
+                    <div class="space-y-4">
+                        <!-- Agent Name -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Agent Name</label>
+                            <input type="text" 
+                                   name="name" 
+                                   id="edit-agent-name"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                                   placeholder="Enter agent name">
+                        </div>
+                        
+                        <!-- Model Selection -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Model</label>
+                            <select name="model" 
+                                    id="edit-agent-model"
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                                <option value="letta/letta-free">Letta Free</option>
+                                <option value="letta/letta-pro">Letta Pro</option>
+                                <option value="openai/gpt-4">GPT-4</option>
+                                <option value="openai/gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Memory Blocks -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Memory Blocks</label>
+                            <div id="edit-memory-blocks" class="space-y-3">
+                                <!-- Memory blocks will be populated here -->
+                            </div>
+                            <button type="button" 
+                                    onclick="addMemoryBlock()"
+                                    class="mt-2 px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors">
+                                + Add Memory Block
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" 
+                                onclick="closeEditModal()"
+                                class="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit" 
+                                class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                            <svg id="edit-spinner" class="htmx-indicator animate-spin w-4 h-4 inline mr-2" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Memory Block Edit Template -->
+<template id="memory-block-edit-template">
+    <div class="memory-block-edit border border-gray-200 dark:border-gray-600 rounded-lg p-3">
+        <div class="flex items-center space-x-2">
+            <input type="text" 
+                   name="memory_block_label" 
+                   placeholder="Label (e.g., persona)"
+                   class="flex-1 px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+            <button type="button" 
+                    onclick="removeMemoryBlock(this)"
+                    class="text-red-500 hover:text-red-700">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <textarea name="memory_block_value" 
+                  placeholder="Memory content..."
+                  rows="2"
+                  class="w-full mt-2 px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 resize-none"></textarea>
+    </div>
+</template>
+
+<script>
+function openEditModal() {
+    const modal = document.getElementById('edit-agent-modal');
+    modal.classList.remove('hidden');
+    
+    // Load current agent data
+    const agentId = getCurrentAgentId();
+    if (agentId) {
+        loadAgentData(agentId);
+    }
+}
+
+function closeEditModal() {
+    const modal = document.getElementById('edit-agent-modal');
+    modal.classList.add('hidden');
+}
+
+function loadAgentData(agentId) {
+    // This would load the current agent data into the form
+    // For now, we'll just show the modal
+    console.log('Loading agent data for:', agentId);
+}
+
+function addMemoryBlock() {
+    const container = document.getElementById('edit-memory-blocks');
+    const template = document.getElementById('memory-block-edit-template');
+    const clone = template.content.cloneNode(true);
+    container.appendChild(clone);
+}
+
+function removeMemoryBlock(button) {
+    button.closest('.memory-block-edit').remove();
+}
+
+// Close modal when clicking outside
+document.getElementById('edit-agent-modal').addEventListener('click', function(event) {
+    if (event.target === this) {
+        closeEditModal();
+    }
+});
+
+// Handle form submission
+document.getElementById('edit-agent-form').addEventListener('htmx:afterRequest', function(event) {
+    if (event.detail.xhr.status >= 200 && event.detail.xhr.status < 300) {
+        closeEditModal();
+        showToast('Agent updated successfully!', 'success');
+    }
+});
+</script>

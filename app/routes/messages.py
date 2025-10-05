@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, Response, current_app
+from flask import Blueprint, request, jsonify, Response, current_app, render_template
 from app.utils.letta_client import LettaClient
 from app.utils.session_manager import get_user_id, get_user_tag_id
 from app.utils.validators import filter_messages, convert_to_ai_sdk_message
@@ -31,10 +31,17 @@ def get_agent_messages(agent_id):
         # Convert to AI SDK format
         converted_messages = convert_to_ai_sdk_message(filtered_messages)
         
-        return jsonify(converted_messages)
+        # Check if this is an HTMX request
+        if request.headers.get('HX-Request'):
+            return render_template('components/messages_list.html', messages=converted_messages)
+        else:
+            return jsonify(converted_messages)
     except Exception as e:
         current_app.logger.error(f'Error fetching messages: {e}')
-        return jsonify({'error': 'Error fetching messages'}), 500
+        if request.headers.get('HX-Request'):
+            return render_template('components/messages_list.html', messages=[], error=str(e))
+        else:
+            return jsonify({'error': 'Error fetching messages'}), 500
 
 @messages_bp.route('/agents/<agent_id>/messages', methods=['POST'])
 def send_message(agent_id):

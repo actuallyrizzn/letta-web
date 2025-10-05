@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app, render_template
 from app.utils.letta_client import LettaClient
 from app.utils.session_manager import get_user_id, get_user_tag_id
 import json
@@ -21,10 +21,17 @@ def get_agents():
         # Sort by updatedAt date (newest first)
         sorted_agents = sorted(agents, key=lambda x: x.get('updatedAt', 0), reverse=True)
         
-        return jsonify(sorted_agents)
+        # Check if this is an HTMX request
+        if request.headers.get('HX-Request'):
+            return render_template('components/agents_list.html', agents=sorted_agents)
+        else:
+            return jsonify(sorted_agents)
     except Exception as e:
         current_app.logger.error(f'Error fetching agents: {e}')
-        return jsonify({'error': 'Error fetching agents'}), 500
+        if request.headers.get('HX-Request'):
+            return render_template('components/agents_list.html', agents=[], error=str(e))
+        else:
+            return jsonify({'error': 'Error fetching agents'}), 500
 
 @agents_bp.route('/agents', methods=['POST'])
 def create_agent():
