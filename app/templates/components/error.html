@@ -1,0 +1,54 @@
+<div class="error-container p-4 rounded-lg border
+    {% if error_type == 'validation' %}bg-yellow-50 border-yellow-200 text-yellow-800{% endif %}
+    {% if error_type == 'permission' %}bg-red-50 border-red-200 text-red-800{% endif %}
+    {% if error_type == 'not_found' %}bg-blue-50 border-blue-200 text-blue-800{% endif %}
+    {% if error_type == 'connection' %}bg-orange-50 border-orange-200 text-orange-800{% endif %}
+    {% if error_type == 'internal' %}bg-gray-50 border-gray-200 text-gray-800{% endif %}
+    dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200">
+    
+    <div class="flex items-start space-x-3">
+        <div class="flex-shrink-0">
+            {% if error_type == 'validation' %}
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            {% elif error_type == 'permission' %}
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+            {% elif error_type == 'not_found' %}
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.29-1.009-5.824-2.709M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+            {% elif error_type == 'connection' %}
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path>
+                </svg>
+            {% else %}
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            {% endif %}
+        </div>
+        
+        <div class="flex-1">
+            <h3 class="text-sm font-medium">
+                {% if error_type == 'validation' %}Validation Error{% endif %}
+                {% if error_type == 'permission' %}Permission Denied{% endif %}
+                {% if error_type == 'not_found' %}Not Found{% endif %}
+                {% if error_type == 'connection' %}Connection Error{% endif %}
+                {% if error_type == 'internal' %}Server Error{% endif %}
+            </h3>
+            <p class="text-sm mt-1">{{ error }}</p>
+            
+            {% if error_type == 'connection' %}
+                <div class="mt-3">
+                    <button onclick="location.reload()" 
+                            class="text-sm bg-orange-100 hover:bg-orange-200 dark:bg-orange-900 dark:hover:bg-orange-800 px-3 py-1 rounded transition-colors">
+                        Retry
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

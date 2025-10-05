@@ -79,10 +79,58 @@
                 sidebar.classList.remove('mobile-sidebar-hidden');
                 sidebar.classList.add('mobile-sidebar-visible');
                 overlay.classList.remove('hidden');
+                // Prevent body scroll when sidebar is open
+                document.body.style.overflow = 'hidden';
             } else {
                 sidebar.classList.add('mobile-sidebar-hidden');
                 sidebar.classList.remove('mobile-sidebar-visible');
                 overlay.classList.add('hidden');
+                // Restore body scroll
+                document.body.style.overflow = '';
+            }
+        }
+        
+        // Close mobile sidebar on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const sidebar = document.getElementById('sidebar');
+                if (!sidebar.classList.contains('mobile-sidebar-hidden')) {
+                    toggleMobileSidebar();
+                }
+            }
+        });
+        
+        // Handle touch events for better mobile experience
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', function(event) {
+            touchStartX = event.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', function(event) {
+            touchEndX = event.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const swipeDistance = touchEndX - touchStartX;
+            
+            // Swipe right to open sidebar (only on mobile)
+            if (swipeDistance > swipeThreshold && window.innerWidth < 1024) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar.classList.contains('mobile-sidebar-hidden')) {
+                    toggleMobileSidebar();
+                }
+            }
+            
+            // Swipe left to close sidebar
+            if (swipeDistance < -swipeThreshold) {
+                const sidebar = document.getElementById('sidebar');
+                if (!sidebar.classList.contains('mobile-sidebar-hidden')) {
+                    toggleMobileSidebar();
+                }
             }
         }
         

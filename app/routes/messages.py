@@ -2,11 +2,15 @@ from flask import Blueprint, request, jsonify, Response, current_app, render_tem
 from app.utils.letta_client import LettaClient
 from app.utils.session_manager import get_user_id, get_user_tag_id
 from app.utils.validators import filter_messages, convert_to_ai_sdk_message
+from app.utils.error_handler import handle_api_error, handle_htmx_error
+from app.utils.performance import rate_limit, message_rate_limiter
+from app.utils.forms import validate_message_data
 import json
 
 messages_bp = Blueprint('messages', __name__)
 
 @messages_bp.route('/agents/<agent_id>/messages', methods=['GET'])
+@handle_api_error
 def get_agent_messages(agent_id):
     """Get messages for an agent"""
     user_id = get_user_id()
@@ -44,6 +48,8 @@ def get_agent_messages(agent_id):
             return jsonify({'error': 'Error fetching messages'}), 500
 
 @messages_bp.route('/agents/<agent_id>/messages', methods=['POST'])
+@handle_api_error
+@rate_limit(message_rate_limiter)
 def send_message(agent_id):
     """Send message to agent"""
     user_id = get_user_id()
@@ -51,6 +57,12 @@ def send_message(agent_id):
         return jsonify({'error': 'User ID is required'}), 400
     
     try:
+        # Validate request data
+        data = request.get_json()
+        validation_errors = validate_message_data(data)
+        if validation_errors:
+            return jsonify({'error': 'Validation failed', 'details': validation_errors}), 400
+        
         client = LettaClient()
         
         # Validate ownership first
@@ -60,7 +72,6 @@ def send_message(agent_id):
             return jsonify({'error': 'Agent not found'}), 404
         
         # Get messages from request
-        data = request.get_json()
         messages = data.get('messages', [])
         
         # Send message to Letta

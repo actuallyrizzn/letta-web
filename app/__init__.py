@@ -29,10 +29,12 @@ def create_app(config_name='default'):
     from app.routes.messages import messages_bp
     from app.routes.runtime import runtime_bp
     from app.routes.frontend import frontend_bp
+    from app.utils.error_handler import error_bp
     
     app.register_blueprint(agents_bp, url_prefix='/api')
     app.register_blueprint(messages_bp, url_prefix='/api')
     app.register_blueprint(runtime_bp, url_prefix='/api')
     app.register_blueprint(frontend_bp)
+    app.register_blueprint(error_bp)
     
     return app

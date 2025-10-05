@@ -1,11 +1,17 @@
 from flask import Blueprint, request, jsonify, current_app, render_template
 from app.utils.letta_client import LettaClient
 from app.utils.session_manager import get_user_id, get_user_tag_id
+from app.utils.error_handler import handle_api_error, handle_htmx_error, validate_request_data
+from app.utils.performance import cache_result, rate_limit, api_rate_limiter
+from app.utils.forms import validate_agent_data
 import json
 
 agents_bp = Blueprint('agents', __name__)
 
 @agents_bp.route('/agents', methods=['GET'])
+@handle_api_error
+@rate_limit(api_rate_limiter)
+@cache_result(ttl=60, key_prefix='agents_list')  # Cache for 1 minute
 def get_agents():
     """Get list of agents for the current user"""
     user_id = get_user_id()
