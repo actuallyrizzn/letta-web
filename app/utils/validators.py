@@ -53,6 +53,11 @@ def convert_to_ai_sdk_message(messages):
             i += 1
             continue
         
+        # Skip very long system messages (likely system prompts/instructions)
+        if len(content) > 5000 and ('You are' in content or 'Personality version' in content or 'memory_metadata' in content):
+            i += 1
+            continue
+        
         # Determine role and type based on content and messageType
         role = 'assistant'  # default
         

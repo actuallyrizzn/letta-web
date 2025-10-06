@@ -113,6 +113,96 @@
             overflow-wrap: break-word !important;
             hyphens: auto !important;
         }
+        
+        /* Ultra-aggressive text wrapping for long content */
+        .prose p, .prose div, .prose span {
+            word-break: break-all !important;
+            overflow-wrap: anywhere !important;
+            white-space: normal !important;
+            max-width: 100% !important;
+        }
+        
+        /* Force wrapping on all text elements */
+        * {
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+        }
+        
+        /* Specific fixes for message content */
+        .max-w-xs *, .max-w-md * {
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+            max-width: 100% !important;
+        }
+        
+        /* Prevent any element from exceeding container width */
+        .prose pre, .prose code {
+            word-break: break-all !important;
+            white-space: pre-wrap !important;
+            overflow-wrap: break-word !important;
+            max-width: 100% !important;
+        }
+        
+        /* Nuclear option - force all elements to respect container width */
+        .max-w-xs, .max-w-md {
+            max-width: min(28rem, calc(100vw - 4rem)) !important;
+            width: min(28rem, calc(100vw - 4rem)) !important;
+        }
+        
+        /* Force all text to wrap aggressively */
+        p, div, span, pre, code, h1, h2, h3, h4, h5, h6 {
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+            hyphens: auto !important;
+            max-width: 100% !important;
+        }
+        
+        /* Prevent any element from causing horizontal scroll */
+        * {
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* Force message containers to never exceed viewport */
+        .flex.justify-end, .flex.justify-start, .flex.justify-center {
+            max-width: 100% !important;
+            overflow: hidden !important;
+        }
+        
+        /* Ensure message bubbles never overflow */
+        .max-w-xs > *, .max-w-md > * {
+            max-width: 100% !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+        }
+        
+        /* Nuclear option - force everything to respect viewport */
+        html, body {
+            overflow-x: hidden !important;
+            max-width: 100vw !important;
+            width: 100vw !important;
+        }
+        
+        /* Force all containers to never exceed viewport */
+        .flex, .flex-1, .max-w-xs, .max-w-md, .prose {
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+        }
+        
+        /* Ultra-aggressive text wrapping */
+        * {
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+            hyphens: auto !important;
+        }
+        
+        /* Force all text elements to wrap */
+        p, div, span, pre, code, h1, h2, h3, h4, h5, h6, li, td, th {
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+            white-space: normal !important;
+            max-width: 100% !important;
+        }
     </style>
     
     {% block extra_head %}{% endblock %}
@@ -322,21 +412,60 @@
             }
         }
         
-        // Add hover effects to messages
-        document.addEventListener('mouseover', function(event) {
-            const message = event.target.closest('.flex.justify-end, .flex.justify-start');
-            if (message) {
-                message.classList.add('transform', 'scale-105');
-                message.style.transition = 'transform 0.2s ease-in-out';
+            // Add hover effects to messages
+            document.addEventListener('mouseover', function(event) {
+                const message = event.target.closest('.flex.justify-end, .flex.justify-start');
+                if (message) {
+                    message.classList.add('transform', 'scale-105');
+                    message.style.transition = 'transform 0.2s ease-in-out';
+                }
+            });
+            
+            document.addEventListener('mouseout', function(event) {
+                const message = event.target.closest('.flex.justify-end, .flex.justify-start');
+                if (message) {
+                    message.classList.remove('transform', 'scale-105');
+                }
+            });
+            
+            // Nuclear option - actively prevent horizontal scroll
+            function preventHorizontalScroll() {
+                // Force overflow-x: hidden on all elements
+                document.documentElement.style.overflowX = 'hidden';
+                document.body.style.overflowX = 'hidden';
+                
+                // Check for any elements that might cause horizontal scroll
+                const allElements = document.querySelectorAll('*');
+                allElements.forEach(el => {
+                    const style = getComputedStyle(el);
+                    if (style.overflowX === 'auto' || style.overflowX === 'scroll') {
+                        el.style.overflowX = 'hidden';
+                    }
+                    
+                    // Force max-width on all elements
+                    if (el.offsetWidth > window.innerWidth) {
+                        el.style.maxWidth = '100vw';
+                        el.style.width = '100%';
+                    }
+                });
+                
+                // Prevent horizontal scroll events
+                window.addEventListener('scroll', function(e) {
+                    if (window.scrollX > 0) {
+                        window.scrollTo(0, window.scrollY);
+                    }
+                });
             }
-        });
-        
-        document.addEventListener('mouseout', function(event) {
-            const message = event.target.closest('.flex.justify-end, .flex.justify-start');
-            if (message) {
-                message.classList.remove('transform', 'scale-105');
-            }
-        });
+            
+            // Run prevention on load and after any DOM changes
+            preventHorizontalScroll();
+            
+            // Re-run prevention after HTMX updates
+            document.addEventListener('htmx:afterRequest', preventHorizontalScroll);
+            document.addEventListener('htmx:afterSwap', preventHorizontalScroll);
+            
+            // Re-run prevention periodically
+            setInterval(preventHorizontalScroll, 1000);
     </script>
     
     {% block extra_scripts %}{% endblock %}

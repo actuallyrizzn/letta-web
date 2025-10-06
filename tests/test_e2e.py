@@ -64,9 +64,10 @@ class TestEndToEndWorkflows:
                 EC.presence_of_element_located((By.ID, 'agents-list'))
             )
             
-            # Check if create agent button is present
-            create_button = browser.find_element(By.CSS_SELECTOR, '[data-id="create-agent-button"] button')
-            assert create_button.is_displayed()
+            # Check if create agent button is present and visible
+            create_button = WebDriverWait(browser, 10).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, '[data-id="create-agent-button"]'))
+            )
             
             # Click create agent button
             create_button.click()
@@ -112,8 +113,9 @@ class TestEndToEndWorkflows:
         browser.get('http://localhost:5000')
         
         # Check if mobile menu button is visible
-        mobile_menu = browser.find_element(By.CSS_SELECTOR, '.lg\\:hidden button')
-        assert mobile_menu.is_displayed()
+        mobile_menu = WebDriverWait(browser, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, '.lg\\:hidden button'))
+        )
         
         # Click mobile menu to open sidebar
         mobile_menu.click()

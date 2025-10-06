@@ -22,10 +22,7 @@ def get_agents():
         client = LettaClient()
         user_tags = get_user_tag_id(user_id)
         
-        # Get agents with user tags
-        tagged_agents = client.list_agents(tags=user_tags, match_all_tags=True)
-        
-        # Get all agents (for backward compatibility with untagged agents)
+        # Get all agents (single call for caching)
         all_agents = client.list_agents()
         
         # Filter to include only agents that either:

@@ -3,6 +3,7 @@ import pytest
 from unittest.mock import patch
 from app import create_app
 from app.config import config
+from playwright.sync_api import sync_playwright
 
 @pytest.fixture(autouse=True)
 def clear_global_state():
@@ -122,3 +123,11 @@ def sample_message_data():
             }
         ]
     }
+
+@pytest.fixture(scope="session")
+def browser():
+    """Browser fixture for E2E tests"""
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        yield browser
+        browser.close()
