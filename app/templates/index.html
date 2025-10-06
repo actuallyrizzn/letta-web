@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
     
     <!-- Agent Details Panel -->
-    <div id="agent-details-panel" class="w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 hidden lg:block flex-shrink-0">
+    <div id="agent-details-panel" class="w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 hidden lg:block flex-shrink-0 overflow-y-auto">
         <div id="agent-details" class="p-4" 
              {% if agent_id %}hx-get="/api/agent-details/{{ agent_id }}" hx-trigger="load" hx-target="this" hx-swap="innerHTML"{% endif %}>
             {% if agent_id %}

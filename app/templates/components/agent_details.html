@@ -46,14 +46,12 @@
             <!-- Archival Memory -->
             <div class="mb-6">
                 <h3 class="text-md font-semibold text-gray-900 dark:text-gray-100 mb-3">Archival Memory</h3>
-                <div id="archival-memory" 
-                     hx-get="/api/agents/{{ agent.id }}/archival_memory" 
-                     hx-trigger="load" 
-                     hx-target="this" 
-                     hx-swap="innerHTML">
-                    <div class="text-center text-gray-500 dark:text-gray-400">
-                        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mx-auto"></div>
-                    </div>
+                <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <svg class="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <p class="text-sm">Archival memory available via search</p>
+                    <p class="text-xs mt-1">Use conversation search to query archival memories</p>
                 </div>
             </div>
             
