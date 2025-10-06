@@ -86,6 +86,33 @@
             max-width: 100%;
             overflow-wrap: break-word;
         }
+        
+        /* Ultra-aggressive scroll prevention */
+        * {
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* Fix specific message containers */
+        .max-w-xs {
+            max-width: min(20rem, calc(100vw - 4rem)) !important;
+        }
+        
+        .max-w-md {
+            max-width: min(28rem, calc(100vw - 4rem)) !important;
+        }
+        
+        /* Prevent any horizontal overflow */
+        .overflow-x-auto {
+            overflow-x: hidden !important;
+        }
+        
+        /* Force word breaking */
+        .prose, .prose * {
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+            hyphens: auto !important;
+        }
     </style>
     
     {% block extra_head %}{% endblock %}
