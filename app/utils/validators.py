@@ -4,7 +4,8 @@ MESSAGE_TYPE = {
     'USER_MESSAGE': 'user_message',
     'ASSISTANT_MESSAGE': 'assistant_message', 
     'SYSTEM_MESSAGE': 'system_message',
-    'TOOL_MESSAGE': 'tool_message'
+    'TOOL_MESSAGE': 'tool_message',
+    'REASONING_MESSAGE': 'reasoning_message'
 }
 
 def filter_messages(messages):
@@ -14,8 +15,11 @@ def filter_messages(messages):
     filtered = []
     for message in messages:
         try:
+            # Use 'message_type' (underscore) not 'messageType' (camelCase)
+            msg_type = message.get('message_type', '')
+            
             # Check for heartbeat messages
-            if (message.get('messageType') == MESSAGE_TYPE['USER_MESSAGE'] and 
+            if (msg_type == MESSAGE_TYPE['USER_MESSAGE'] and 
                 isinstance(message.get('content'), str)):
                 try:
                     parsed = json.loads(message['content'])
@@ -25,7 +29,7 @@ def filter_messages(messages):
                     pass  # Not JSON, continue processing
             
             # Check for hidden message types
-            if message.get('messageType') in MESSAGE_TYPES_TO_HIDE:
+            if msg_type in MESSAGE_TYPES_TO_HIDE:
                 continue
             
             filtered.append(message)
@@ -45,7 +49,8 @@ def convert_to_ai_sdk_message(messages):
     while i < len(messages):
         message = messages[i]
         content = message.get('content', '')
-        message_type = message.get('messageType', '')
+        reasoning = message.get('reasoning', '')
+        message_type = message.get('message_type', '')  # Use underscore not camelCase
         
         # Skip standalone timestamps (they should be attached to previous messages)
         if isinstance(content, str) and content.count(':') == 1 and len(content) < 10 and content.replace(':', '').replace('.', '').isdigit():
@@ -58,22 +63,23 @@ def convert_to_ai_sdk_message(messages):
             i += 1
             continue
         
-        # Determine role and type based on content and messageType
+        # Determine role and type based on content and message_type
         role = 'assistant'  # default
         
-        # Check messageType first
+        # Check message_type first
         if message_type == MESSAGE_TYPE['USER_MESSAGE']:
             role = 'user'
-        # Check if content contains username pattern (user messages)
-        elif isinstance(content, str) and '[Username:' in content:
-            role = 'user'
-        # Check for system messages
+        elif message_type == MESSAGE_TYPE['ASSISTANT_MESSAGE']:
+            role = 'assistant'
         elif message_type == MESSAGE_TYPE['SYSTEM_MESSAGE']:
             role = 'system'
-        # Check for tool messages
         elif message_type == MESSAGE_TYPE['TOOL_MESSAGE']:
             role = 'tool_call'
-        # Check for JSON content that might be system messages
+        elif message_type == MESSAGE_TYPE['REASONING_MESSAGE']:
+            role = 'reasoning'
+        # Fallback checks if message_type is not set
+        elif isinstance(content, str) and '[Username:' in content:
+            role = 'user'
         elif isinstance(content, str) and content.startswith('{') and '}' in content:
             try:
                 import json
@@ -88,9 +94,6 @@ def convert_to_ai_sdk_message(messages):
                     role = 'system'
             except json.JSONDecodeError:
                 role = 'system'
-        # Check for reasoning/thinking content
-        elif isinstance(content, str) and any(keyword in content.lower() for keyword in ['reasoning', 'thinking', 'analysis', 'considering']):
-            role = 'reasoning'
         
         # Skip heartbeat and system messages that should be hidden
         if role == 'system' and isinstance(content, str):

@@ -20,17 +20,7 @@ def get_agent_messages(agent_id):
     try:
         client = LettaClient()
         
-        # Validate ownership first
-        agent = client.get_agent(agent_id)
-        user_tags = get_user_tag_id(user_id)
-        
-        # Check if user owns the agent (either has user tag OR has no tags for backward compatibility)
-        user_tag = f'user:{user_id}'
-        agent_tags = agent.get('tags', [])
-        if user_tags and user_tag not in agent_tags and len(agent_tags) > 0:
-            return jsonify({'error': 'Agent not found'}), 404
-        
-        # Get messages
+        # Get messages (no access control - Letta handles it)
         messages = client.list_messages(agent_id, limit=100)
         
         # Filter messages
@@ -61,34 +51,39 @@ def send_message(agent_id):
         return jsonify({'error': 'User ID is required'}), 400
     
     try:
-        # Validate request data
-        data = request.get_json()
-        validation_errors = validate_message_data(data)
-        if validation_errors:
-            return jsonify({'error': 'Validation failed', 'details': validation_errors}), 400
+        # Handle both JSON and form data
+        if request.is_json:
+            data = request.get_json()
+            message_content = data.get('messages', [])
+        else:
+            # HTMX form submission
+            message_content = request.form.get('message', '')
+            if not message_content:
+                return jsonify({'error': 'Message is required'}), 400
+            # Convert to messages array format
+            message_content = [{'role': 'user', 'content': message_content}]
         
         client = LettaClient()
         
-        # Validate ownership first
-        agent = client.get_agent(agent_id)
-        user_tags = get_user_tag_id(user_id)
+        # Send message to Letta (no access control - Letta handles it)
+        response = client.send_message(agent_id, message_content)
         
-        # Check if user owns the agent (either has user tag OR has no tags for backward compatibility)
-        user_tag = f'user:{user_id}'
-        agent_tags = agent.get('tags', [])
-        if user_tags and user_tag not in agent_tags and len(agent_tags) > 0:
-            return jsonify({'error': 'Agent not found'}), 404
+        # Fetch updated messages after sending
+        updated_messages = client.list_messages(agent_id, limit=100)
+        filtered_updated_messages = filter_messages(updated_messages)
+        converted_updated_messages = convert_to_ai_sdk_message(filtered_updated_messages)
         
-        # Get messages from request
-        messages = data.get('messages', [])
-        
-        # Send message to Letta
-        response = client.send_message(agent_id, messages)
-        
-        return jsonify(response)
+        # Return the updated messages list for HTMX swap
+        if request.headers.get('HX-Request'):
+            return render_template('components/messages_list.html', messages=converted_updated_messages)
+        else:
+            return jsonify(response)
     except Exception as e:
         current_app.logger.error(f'Error sending message: {e}')
-        return jsonify({'error': 'Error sending message'}), 500
+        if request.headers.get('HX-Request'):
+            return render_template('components/messages_list.html', messages=[], error=str(e))
+        else:
+            return jsonify({'error': 'Error sending message'}), 500
 
 @messages_bp.route('/agents/<agent_id>/archival_memory', methods=['GET'])
 def get_agent_archival_memory(agent_id):
@@ -100,17 +95,7 @@ def get_agent_archival_memory(agent_id):
     try:
         client = LettaClient()
         
-        # Validate ownership first
-        agent = client.get_agent(agent_id)
-        user_tags = get_user_tag_id(user_id)
-        
-        # Check if user owns the agent (either has user tag OR has no tags for backward compatibility)
-        user_tag = f'user:{user_id}'
-        agent_tags = agent.get('tags', [])
-        if user_tags and user_tag not in agent_tags and len(agent_tags) > 0:
-            return jsonify({'error': 'Agent not found'}), 404
-        
-        # Get archival memory
+        # Get archival memory (no access control - Letta handles it)
         try:
             memory = client.get_archival_memory(agent_id)
             # Check if this is an HTMX request

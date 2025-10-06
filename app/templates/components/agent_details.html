@@ -28,7 +28,18 @@
             <div class="mb-6">
                 <h3 class="text-md font-semibold text-gray-900 dark:text-gray-100 mb-3">Memory Blocks</h3>
                 <div id="memory-blocks" class="space-y-3">
-                    <!-- Memory blocks will be populated here -->
+                    {% if agent.memory and agent.memory.blocks %}
+                        {% for block in agent.memory.blocks %}
+                        <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ block.label }}</h4>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{{ block.value[:200] }}{% if block.value|length > 200 %}...{% endif %}</p>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-sm text-gray-500 dark:text-gray-400">No memory blocks found</p>
+                    {% endif %}
                 </div>
             </div>
             

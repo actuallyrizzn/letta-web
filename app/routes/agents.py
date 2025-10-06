@@ -20,26 +20,15 @@ def get_agents():
     
     try:
         client = LettaClient()
-        user_tags = get_user_tag_id(user_id)
         
-        # Get all agents (single call for caching)
+        # Get all agents (no filtering - Letta handles access control)
         all_agents = client.list_agents()
         
-        # Filter to include only agents that either:
-        # 1. Have the user's tag, OR
-        # 2. Have no tags (backward compatibility)
-        user_tag = f'user:{user_id}'
-        filtered_agents = []
-        for agent in all_agents:
-            agent_tags = agent.get('tags', [])
-            if user_tag in agent_tags or len(agent_tags) == 0:
-                filtered_agents.append(agent)
-        
         # Sort by updatedAt date (newest first)
-        sorted_agents = sorted(filtered_agents, key=lambda x: x.get('updated_at', 0), reverse=True)
+        sorted_agents = sorted(all_agents, key=lambda x: x.get('updated_at', 0), reverse=True)
         
         # Debug logging
-        current_app.logger.info(f'Found {len(all_agents)} total agents, {len(filtered_agents)} filtered agents')
+        current_app.logger.info(f'Found {len(all_agents)} total agents')
         
         # Check if this is an HTMX request
         if request.headers.get('HX-Request'):
