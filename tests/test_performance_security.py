@@ -250,6 +250,9 @@ class TestSecurityTests:
     def test_session_security(self, app):
         """Test session security features"""
         with app.test_client() as client:
+            # Set test user ID to None to simulate no user
+            app._test_user_id = None
+            
             # Test session creation
             response = client.get('/api/agents')
             assert response.status_code == 400  # No user ID

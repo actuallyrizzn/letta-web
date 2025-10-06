@@ -31,7 +31,7 @@ class LettaClient:
             params['tags'] = tags
             params['matchAllTags'] = match_all_tags
         
-        return self._make_request('GET', '/agents', params=params)
+        return self._make_request('GET', '/v1/agents/', params=params)
     
     def create_agent(self, memory_blocks, model, embedding, tags=None):
         """Create a new agent"""
@@ -43,30 +43,30 @@ class LettaClient:
         if tags:
             data['tags'] = tags
         
-        return self._make_request('POST', '/agents', json=data)
+        return self._make_request('POST', '/v1/agents/', json=data)
     
     def get_agent(self, agent_id):
         """Get agent by ID"""
-        return self._make_request('GET', f'/agents/{agent_id}')
+        return self._make_request('GET', f'/v1/agents/{agent_id}')
     
     def update_agent(self, agent_id, **kwargs):
         """Update agent"""
-        return self._make_request('PUT', f'/agents/{agent_id}', json=kwargs)
+        return self._make_request('PUT', f'/v1/agents/{agent_id}', json=kwargs)
     
     def delete_agent(self, agent_id):
         """Delete agent"""
-        return self._make_request('DELETE', f'/agents/{agent_id}')
+        return self._make_request('DELETE', f'/v1/agents/{agent_id}')
     
     def list_messages(self, agent_id, limit=100):
         """List messages for an agent"""
         params = {'limit': limit}
-        return self._make_request('GET', f'/agents/{agent_id}/messages', params=params)
+        return self._make_request('GET', f'/v1/agents/{agent_id}/messages', params=params)
     
     def send_message(self, agent_id, messages):
         """Send message to agent"""
         data = {'messages': messages}
-        return self._make_request('POST', f'/agents/{agent_id}/messages', json=data)
+        return self._make_request('POST', f'/v1/agents/{agent_id}/messages', json=data)
     
     def get_archival_memory(self, agent_id):
         """Get agent's archival memory"""
-        return self._make_request('GET', f'/agents/{agent_id}/archival_memory')
+        return self._make_request('GET', f'/v1/agents/{agent_id}/archival_memory')

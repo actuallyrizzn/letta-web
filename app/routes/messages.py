@@ -23,7 +23,11 @@ def get_agent_messages(agent_id):
         # Validate ownership first
         agent = client.get_agent(agent_id)
         user_tags = get_user_tag_id(user_id)
-        if user_tags and not any(tag in agent.get('tags', []) for tag in user_tags):
+        
+        # Check if user owns the agent (either has user tag OR has no tags for backward compatibility)
+        user_tag = f'user:{user_id}'
+        agent_tags = agent.get('tags', [])
+        if user_tags and user_tag not in agent_tags and len(agent_tags) > 0:
             return jsonify({'error': 'Agent not found'}), 404
         
         # Get messages
@@ -68,7 +72,11 @@ def send_message(agent_id):
         # Validate ownership first
         agent = client.get_agent(agent_id)
         user_tags = get_user_tag_id(user_id)
-        if user_tags and not any(tag in agent.get('tags', []) for tag in user_tags):
+        
+        # Check if user owns the agent (either has user tag OR has no tags for backward compatibility)
+        user_tag = f'user:{user_id}'
+        agent_tags = agent.get('tags', [])
+        if user_tags and user_tag not in agent_tags and len(agent_tags) > 0:
             return jsonify({'error': 'Agent not found'}), 404
         
         # Get messages from request
@@ -95,13 +103,28 @@ def get_agent_archival_memory(agent_id):
         # Validate ownership first
         agent = client.get_agent(agent_id)
         user_tags = get_user_tag_id(user_id)
-        if user_tags and not any(tag in agent.get('tags', []) for tag in user_tags):
+        
+        # Check if user owns the agent (either has user tag OR has no tags for backward compatibility)
+        user_tag = f'user:{user_id}'
+        agent_tags = agent.get('tags', [])
+        if user_tags and user_tag not in agent_tags and len(agent_tags) > 0:
             return jsonify({'error': 'Agent not found'}), 404
         
         # Get archival memory
-        memory = client.get_archival_memory(agent_id)
-        
-        return jsonify(memory)
+        try:
+            memory = client.get_archival_memory(agent_id)
+            # Check if this is an HTMX request
+            if request.headers.get('HX-Request'):
+                return render_template('components/archival_memory.html', memory=memory)
+            else:
+                return jsonify(memory)
+        except Exception as memory_error:
+            # If archival memory doesn't exist, return empty result
+            current_app.logger.info(f'No archival memory found for agent {agent_id}: {memory_error}')
+            if request.headers.get('HX-Request'):
+                return render_template('components/archival_memory.html', memory={'archival_memory': []})
+            else:
+                return jsonify({'archival_memory': []})
     except Exception as e:
         current_app.logger.error(f'Error fetching archival memory: {e}')
         return jsonify({'error': 'Error fetching archival memory'}), 500

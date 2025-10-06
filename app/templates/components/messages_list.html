@@ -1,31 +1,101 @@
 {% if messages %}
+    {% set prev_role = '' %}
     {% for message in messages %}
         {% if message.role == 'user' %}
-        <div class="flex justify-end">
-            <div class="max-w-xs lg:max-w-md px-4 py-2 bg-blue-500 text-white rounded-lg">
-                <div class="prose prose-sm prose-invert max-w-none">
-                    {{ message.content | safe }}
+            <!-- User Message -->
+            <div class="flex justify-end mb-4 {% if prev_role == 'user' %}mt-1{% endif %}">
+                <div class="max-w-xs lg:max-w-md px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl shadow-lg {% if prev_role == 'user' %}rounded-tr-md{% endif %}">
+                    <div class="prose prose-sm prose-invert max-w-none">
+                        {{ message.content | markdown | safe }}
+                    </div>
+                    {% if prev_role != 'user' %}
+                    <div class="text-xs opacity-75 mt-2 text-right">
+                        {{ message.createdAt | datetime }}
+                    </div>
+                    {% endif %}
                 </div>
-                <p class="text-xs opacity-75 mt-1">{{ message.createdAt | datetime }}</p>
             </div>
-        </div>
         {% elif message.role == 'assistant' %}
-        <div class="flex justify-start">
-            <div class="max-w-xs lg:max-w-md px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg">
-                <div class="prose prose-sm dark:prose-invert max-w-none">
-                    {{ message.content | safe }}
+            <!-- Assistant Message -->
+            <div class="flex justify-start mb-4 {% if prev_role == 'assistant' %}mt-1{% endif %}">
+                <div class="max-w-xs lg:max-w-md px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-600 {% if prev_role == 'assistant' %}rounded-tl-md{% endif %}">
+                    <div class="prose prose-sm dark:prose-invert max-w-none">
+                        {{ message.content | markdown | safe }}
+                    </div>
+                    {% if prev_role != 'assistant' %}
+                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                        {{ message.createdAt | datetime }}
+                    </div>
+                    {% endif %}
                 </div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ message.createdAt | datetime }}</p>
             </div>
-        </div>
+        {% elif message.role == 'system' %}
+            <!-- System Message -->
+            <div class="flex justify-center mb-4">
+                <div class="max-w-md px-4 py-2 bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-4 h-4 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="text-sm text-yellow-800 dark:text-yellow-200 font-medium">System</span>
+                    </div>
+                    <div class="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+                        {{ message.content | markdown | safe }}
+                    </div>
+                </div>
+            </div>
+        {% elif message.role == 'tool_call' %}
+            <!-- Tool Call Message -->
+            <div class="flex justify-start mb-4">
+                <div class="max-w-md px-4 py-3 bg-purple-50 dark:bg-purple-900 border border-purple-200 dark:border-purple-700 rounded-lg">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <svg class="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <span class="text-sm text-purple-800 dark:text-purple-200 font-medium">Tool Call</span>
+                    </div>
+                    <div class="text-sm text-purple-700 dark:text-purple-300">
+                        {{ message.content | markdown | safe }}
+                    </div>
+                </div>
+            </div>
+        {% elif message.role == 'reasoning' %}
+            <!-- Reasoning Message with Collapsible Content -->
+            <div class="flex justify-start mb-4">
+                <div class="max-w-md px-4 py-3 bg-indigo-50 dark:bg-indigo-900 border border-indigo-200 dark:border-indigo-700 rounded-lg">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                        <span class="text-sm text-indigo-800 dark:text-indigo-200 font-medium">Reasoning</span>
+                        {% if message.content|length > 200 %}
+                        <button onclick="toggleReasoning('{{ message.id }}')" class="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 ml-auto cursor-pointer">
+                            <span id="toggle-{{ message.id }}">Show more</span>
+                        </button>
+                        {% endif %}
+                    </div>
+                    <div class="text-sm text-indigo-700 dark:text-indigo-300">
+                        {% if message.content|length > 200 %}
+                        <div id="content-{{ message.id }}">
+                            <div id="preview-{{ message.id }}">{{ message.content[:200] }}...</div>
+                            <div id="full-{{ message.id }}" class="hidden">{{ message.content | markdown | safe }}</div>
+                        </div>
+                        {% else %}
+                        {{ message.content | markdown | safe }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         {% endif %}
+        {% set prev_role = message.role %}
     {% endfor %}
 {% else %}
-    <div class="text-center text-gray-500 dark:text-gray-400 p-8">
-        <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="text-center py-12 text-gray-500 dark:text-gray-400">
+        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
         </svg>
-        <p class="text-sm">No messages yet</p>
-        <p class="text-xs mt-1">Start a conversation below</p>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No messages yet</h3>
+        <p class="text-sm">Start a conversation with this agent</p>
     </div>
 {% endif %}

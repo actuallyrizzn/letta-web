@@ -11,11 +11,14 @@ def get_user_id():
         return 'default'
     
     # Check if we're in test mode and should use test user ID
-    if current_app.config.get('TESTING') and hasattr(current_app, '_test_user_id'):
-        if current_app._test_user_id is not None:
-            return current_app._test_user_id
+    if current_app.config.get('TESTING'):
+        if hasattr(current_app, '_test_user_id'):
+            if current_app._test_user_id is not None:
+                return current_app._test_user_id
+            else:
+                return None  # Return None when explicitly set to None in tests
         else:
-            return None  # Return None when explicitly set to None in tests
+            return 'test-user-123'  # Fallback for tests when _test_user_id doesn't exist
     
     try:
         user_id = session.get(LETTA_UID)

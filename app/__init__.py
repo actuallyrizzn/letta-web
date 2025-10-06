@@ -1,15 +1,12 @@
 from flask import Flask
-from flask_session import Session
 from app.config import config
 from datetime import datetime
+import markdown
 
 def create_app(config_name='default'):
     """Application factory pattern"""
     app = Flask(__name__, template_folder='templates', static_folder='static')
     app.config.from_object(config[config_name])
-    
-    # Initialize Flask-Session
-    Session(app)
     
     # Add custom Jinja2 filters
     @app.template_filter('datetime')
@@ -23,6 +20,15 @@ def create_app(config_name='default'):
             except:
                 return timestamp
         return timestamp
+    
+    @app.template_filter('markdown')
+    def markdown_filter(text):
+        """Convert markdown text to HTML"""
+        if not text:
+            return ''
+        # Configure markdown with extensions for better formatting
+        md = markdown.Markdown(extensions=['fenced_code', 'tables', 'nl2br'])
+        return md.convert(text)
     
     # Register blueprints
     from app.routes.agents import agents_bp
