@@ -125,9 +125,9 @@ class ProductionConfig(Config):
      --worker-class gevent \
      --bind 127.0.0.1:5000 \
      --timeout 120 \
-     --access-logfile /var/log/letta-chatbot/access.log \
-     --error-logfile /var/log/letta-chatbot/error.log \
-     wsgi_production:app
+    --access-logfile /var/log/letta-chatbot/access.log \
+    --error-logfile /var/log/letta-chatbot/error.log \
+    wsgi:app
 
    Restart=always
    RestartSec=10
@@ -155,7 +155,7 @@ class ProductionConfig(Config):
    `uwsgi.ini`:
    ```ini
    [uwsgi]
-   module = wsgi_production:app
+   module = wsgi:app
    master = true
    processes = 4
    threads = 2
@@ -207,7 +207,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD python -c "import requests; requests.get('http://localhost:5000/api/runtime')"
 
 # Run application
-CMD ["gunicorn", "--workers=4", "--bind=0.0.0.0:5000", "--timeout=120", "wsgi_production:app"]
+CMD ["gunicorn", "--workers=4", "--bind=0.0.0.0:5000", "--timeout=120", "wsgi:app"]
 ```
 
 #### Build and Run
@@ -416,7 +416,7 @@ Create `app.yaml`:
 
 ```yaml
 runtime: python311
-entrypoint: gunicorn -b :$PORT wsgi_production:app
+entrypoint: gunicorn -b :$PORT wsgi:app
 
 env_variables:
   FLASK_ENV: 'production'
@@ -613,7 +613,7 @@ pidfile = "/var/run/letta-chatbot.pid"
 Run with:
 
 ```bash
-gunicorn -c gunicorn.conf.py wsgi_production:app
+gunicorn -c gunicorn.conf.py wsgi:app
 ```
 
 ### Redis Caching
@@ -791,7 +791,7 @@ sudo chown -R www-data:www-data /var/www/letta-chatbot
 
 # Verify environment
 source venv/bin/activate
-python wsgi_production.py
+FLASK_ENV=production python wsgi.py
 ```
 
 #### High Memory Usage

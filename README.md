@@ -354,10 +354,10 @@ export FLASK_ENV=production
 export FLASK_SECRET_KEY="your-secure-secret-key"
 
 # Run with Gunicorn
-gunicorn -w 4 -b 0.0.0.0:5000 wsgi_production:app
+gunicorn -w 4 -b 0.0.0.0:5000 wsgi:app
 
 # Or with uWSGI
-uwsgi --http :5000 --wsgi-file wsgi_production.py --callable app
+uwsgi --http :5000 --wsgi-file wsgi.py --callable app
 ```
 
 ### Docker Deployment
