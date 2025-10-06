@@ -1,20 +1,14 @@
-{% if memory.archival_memory %}
+{% if memory and memory|length > 0 %}
     <div class="space-y-3">
-        {% for item in memory.archival_memory %}
+        {% for passage in memory %}
             <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
                 <div class="text-sm text-gray-900 dark:text-gray-100">
-                    {% if item.content %}
-                        <p class="mb-2">{{ item.content }}</p>
+                    {% if passage.text %}
+                        <p class="mb-2 whitespace-pre-wrap">{{ passage.text[:300] }}{% if passage.text|length > 300 %}...{% endif %}</p>
                     {% endif %}
-                    {% if item.metadata %}
-                        <div class="text-xs text-gray-500 dark:text-gray-400">
-                            <strong>Metadata:</strong>
-                            <pre class="mt-1 text-xs bg-gray-100 dark:bg-gray-800 p-2 rounded overflow-x-auto">{{ item.metadata | tojson(indent=2) }}</pre>
-                        </div>
-                    {% endif %}
-                    {% if item.timestamp %}
+                    {% if passage.created_at %}
                         <div class="text-xs text-gray-400 dark:text-gray-500 mt-2">
-                            {{ item.timestamp | datetime }}
+                            {{ passage.created_at | datetime }}
                         </div>
                     {% endif %}
                 </div>

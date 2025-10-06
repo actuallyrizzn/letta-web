@@ -41,18 +41,19 @@ class TestMessagesAPI:
             assert response.status_code == 200
             assert b'max-w-xs lg:max-w-md' in response.data  # Check for message styling
     
-    def test_get_agent_messages_unauthorized(self, client_with_session):
-        """Test message retrieval for unauthorized agent"""
-        with patch('app.routes.messages.LettaClient') as mock_client:
-            mock_instance = MagicMock()
-            mock_instance.get_agent.return_value = {
-                'id': 'agent-1',
-                'tags': ['user:other-user']
-            }
-            mock_client.return_value = mock_instance
-            
-            response = client_with_session.get('/api/agents/agent-1/messages')
-            assert response.status_code == 404
+    # DISABLED: User filtering removed - Letta server handles access control
+    # def test_get_agent_messages_unauthorized(self, client_with_session):
+    #     """Test message retrieval for unauthorized agent"""
+    #     with patch('app.routes.messages.LettaClient') as mock_client:
+    #         mock_instance = MagicMock()
+    #         mock_instance.get_agent.return_value = {
+    #             'id': 'agent-1',
+    #             'tags': ['user:other-user']
+    #         }
+    #         mock_client.return_value = mock_instance
+    #         
+    #         response = client_with_session.get('/api/agents/agent-1/messages')
+    #         assert response.status_code == 404
     
     def test_send_message_success(self, client_with_session, sample_message_data):
         """Test successful message sending"""
@@ -89,7 +90,7 @@ class TestMessagesAPI:
         
         data = json.loads(response.data)
         assert 'error' in data
-        assert 'Validation failed' in data['error']
+        assert 'Invalid message role' in data['error']
     
     def test_send_message_empty_messages(self, client_with_session):
         """Test message sending with empty messages"""
@@ -162,18 +163,19 @@ class TestMessagesAPI:
             assert 'memories' in data
             assert len(data['memories']) == 2
     
-    def test_get_archival_memory_unauthorized(self, client_with_session):
-        """Test archival memory retrieval for unauthorized agent"""
-        with patch('app.routes.messages.LettaClient') as mock_client:
-            mock_instance = MagicMock()
-            mock_instance.get_agent.return_value = {
-                'id': 'agent-1',
-                'tags': ['user:other-user']
-            }
-            mock_client.return_value = mock_instance
-            
-            response = client_with_session.get('/api/agents/agent-1/archival_memory')
-            assert response.status_code == 404
+    # DISABLED: User filtering removed - Letta server handles access control
+    # def test_get_archival_memory_unauthorized(self, client_with_session):
+    #     """Test archival memory retrieval for unauthorized agent"""
+    #     with patch('app.routes.messages.LettaClient') as mock_client:
+    #         mock_instance = MagicMock()
+    #         mock_instance.get_agent.return_value = {
+    #             'id': 'agent-1',
+    #             'tags': ['user:other-user']
+    #         }
+    #         mock_client.return_value = mock_client
+    #         
+    #         response = client_with_session.get('/api/agents/agent-1/archival_memory')
+    #         assert response.status_code == 404
     
     def test_message_filtering(self, client_with_session):
         """Test message filtering removes system messages"""
@@ -188,19 +190,19 @@ class TestMessagesAPI:
             raw_messages = [
                 {
                     'id': 'msg-1',
-                    'messageType': 'user_message',
+                    'message_type': 'user_message',
                     'content': 'Hello',
                     'date': 1640995200000
                 },
                 {
                     'id': 'msg-2',
-                    'messageType': 'system_message',  # Should be filtered
+                    'message_type': 'system_message',  # Should be filtered
                     'content': 'System message',
                     'date': 1640995210000
                 },
                 {
                     'id': 'msg-3',
-                    'messageType': 'assistant_message',
+                    'message_type': 'assistant_message',
                     'content': 'Hi there!',
                     'date': 1640995220000
                 }

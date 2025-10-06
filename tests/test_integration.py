@@ -73,13 +73,13 @@ class TestIntegrationWorkflows:
             mock_instance.list_messages.return_value = [
                 {
                     'id': 'msg-1',
-                    'messageType': 'user_message',
+                    'message_type': 'user_message',
                     'content': 'Hello',
                     'date': 1640995200000
                 },
                 {
                     'id': 'msg-2',
-                    'messageType': 'assistant_message',
+                    'message_type': 'assistant_message',
                     'content': 'Test response',
                     'date': 1640995260000
                 }
@@ -113,7 +113,8 @@ class TestIntegrationWorkflows:
             
             # Verify all methods were called
             mock_instance.send_message.assert_called_once()
-            mock_instance.list_messages.assert_called_once()
+            # list_messages is called twice: once after sending, once explicitly
+            assert mock_instance.list_messages.call_count == 2
             mock_instance.get_archival_memory.assert_called_once()
     
     def test_multi_user_isolation(self, app):

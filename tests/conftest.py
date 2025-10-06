@@ -77,13 +77,13 @@ def mock_letta_responses():
         'messages': [
             {
                 'id': 'msg-1',
-                'messageType': 'user_message',
+                'message_type': 'user_message',
                 'content': 'Hello, test message',
                 'date': 1640995200000
             },
             {
                 'id': 'msg-2', 
-                'messageType': 'assistant_message',
+                'message_type': 'assistant_message',
                 'content': 'Hello! How can I help you?',
                 'date': 1640995260000
             }

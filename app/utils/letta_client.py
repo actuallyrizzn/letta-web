@@ -67,6 +67,13 @@ class LettaClient:
         data = {'messages': messages}
         return self._make_request('POST', f'/v1/agents/{agent_id}/messages', json=data)
     
-    def get_archival_memory(self, agent_id):
-        """Get agent's archival memory"""
-        return self._make_request('GET', f'/v1/agents/{agent_id}/archival_memory')
+    def get_archival_memory(self, agent_id, limit=50, after=None, before=None):
+        """Get agent's archival memory (passages)"""
+        params = {}
+        if limit:
+            params['limit'] = limit
+        if after:
+            params['after'] = after
+        if before:
+            params['before'] = before
+        return self._make_request('GET', f'/v1/agents/{agent_id}/archival-memory', params=params)

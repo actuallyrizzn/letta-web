@@ -392,3 +392,131 @@ client.blocks.create(
 
 
 NOTE - List Blocks MAY not list all blocks. Seems buggy. Core team is looking into it.
+
+---
+
+## Archival Memory / Passages API
+
+Archival memory (also called passages) provides long-term storage for agent memories. Unlike core memory blocks which are always loaded, archival memory is searched semantically when needed.
+
+### List Passages (Archival Memory)
+Retrieve the memories in an agent's archival memory store (paginated query).
+
+**Endpoint:** `GET /v1/agents/:agent_id/archival-memory`
+
+```python
+from letta_client import Letta
+
+client = Letta(
+    token="YOUR_TOKEN",
+)
+client.agents.passages.list(
+    agent_id="agent_id",
+    after=None,           # Unique ID of the memory to start the query range at
+    before=None,          # Unique ID of the memory to end the query range at
+    limit=None,           # How many results to include in the response
+    search=None,          # Search passages by text
+    ascending=True        # Sort oldest to newest (True, default) or newest to oldest (False)
+)
+```
+
+**Response:** Returns a list of passage objects with fields including:
+- `text` - The text of the passage
+- `embedding` - The embedding of the passage (optional)
+- `id` - The passage ID (format: "passage-xxxxxxxx")
+- `created_at` - Creation timestamp
+- `updated_at` - Last update timestamp
+- `tags` - Tags associated with this passage
+- `archive_id` - The archive containing this passage
+- `source_id` - The data source of the passage
+- `file_id` - Associated file ID (if any)
+- `metadata` - Additional metadata
+
+### Create Passage
+Insert a memory into an agent's archival memory store.
+
+**Endpoint:** `POST /v1/agents/:agent_id/archival-memory`
+
+```python
+from letta_client import Letta
+
+client = Letta(
+    token="YOUR_TOKEN",
+)
+client.agents.passages.create(
+    agent_id="agent_id",
+    text="Text to write to archival memory",
+    tags=["tag1", "tag2"],           # Optional list of tags
+    created_at="2024-01-15T09:30:00Z"  # Optional timestamp (defaults to current UTC time)
+)
+```
+
+**Response:** Returns the created passage object with all fields populated.
+
+### Search Archival Memory
+Search archival memory using semantic (embedding-based) search with optional temporal filtering.
+
+This endpoint allows manual triggering of archival memory searches, enabling users to query an agent's archival memory store directly via the API. The search uses the same functionality as the agent's `archival_memory_search` tool but is accessible for external API usage.
+
+**Endpoint:** `POST /v1/agents/:agent_id/archival-memory/search`
+
+```python
+from letta_client import Letta
+
+client = Letta(
+    token="YOUR_TOKEN",
+)
+client.agents.passages.search(
+    agent_id="agent_id",
+    query="search query text",
+    tags=["tag1"],        # Optional: filter by tags
+    match="any"           # How to match tags: 'any' or 'all'
+)
+```
+
+**Response:** Returns search results with:
+- `results` - List of matching passages with `timestamp`, `content`, and `tags`
+- `count` - Total number of results
+
+### Delete Passage
+Delete a passage from an agent's archival memory.
+
+**Endpoint:** `DELETE /v1/agents/:agent_id/archival-memory/:memory_id`
+
+```python
+from letta_client import Letta
+
+client = Letta(
+    token="YOUR_TOKEN",
+)
+client.agents.passages.delete(
+    agent_id="agent_id",
+    memory_id="passage-xxxxxxxx"
+)
+```
+
+### Modify Passage
+Modify an existing passage in archival memory.
+
+**Endpoint:** `PATCH /v1/agents/:agent_id/archival-memory/:memory_id`
+
+```python
+from letta_client import Letta
+
+client = Letta(
+    token="YOUR_TOKEN",
+)
+client.agents.passages.modify(
+    agent_id="agent_id",
+    memory_id="passage-xxxxxxxx",
+    text="Updated text",           # Optional: update the text
+    tags=["new_tag"]              # Optional: update tags
+)
+```
+
+### Usage Notes
+- Passages are automatically embedded when created
+- Semantic search uses embeddings to find relevant memories
+- Passages can be tagged for better organization and filtering
+- The archival memory store is separate from core memory blocks
+- Archival memories are retrieved on-demand rather than always loaded

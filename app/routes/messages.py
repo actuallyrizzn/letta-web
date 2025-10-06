@@ -55,6 +55,27 @@ def send_message(agent_id):
         if request.is_json:
             data = request.get_json()
             message_content = data.get('messages', [])
+            
+            # Validate JSON messages
+            if not message_content:
+                return jsonify({'error': 'Messages field is required'}), 400
+            if not isinstance(message_content, list):
+                return jsonify({'error': 'Messages must be an array'}), 400
+            if len(message_content) == 0:
+                return jsonify({'error': 'Messages cannot be empty'}), 400
+            
+            # Validate message content
+            for msg in message_content:
+                if not isinstance(msg, dict):
+                    return jsonify({'error': 'Each message must be an object'}), 400
+                if 'role' not in msg or 'content' not in msg:
+                    return jsonify({'error': 'Each message must have role and content'}), 400
+                if msg['role'] not in ['user', 'assistant', 'system']:
+                    return jsonify({'error': 'Invalid message role'}), 400
+                if not isinstance(msg['content'], str):
+                    return jsonify({'error': 'Message content must be a string'}), 400
+                if len(msg['content']) > 4000:
+                    return jsonify({'error': 'Message content too long (max 4000 characters)'}), 400
         else:
             # HTMX form submission
             message_content = request.form.get('message', '')
@@ -95,9 +116,9 @@ def get_agent_archival_memory(agent_id):
     try:
         client = LettaClient()
         
-        # Get archival memory (no access control - Letta handles it)
+        # Get archival memory (passages) - no access control, Letta handles it
         try:
-            memory = client.get_archival_memory(agent_id)
+            memory = client.get_archival_memory(agent_id, limit=10)
             # Check if this is an HTMX request
             if request.headers.get('HX-Request'):
                 return render_template('components/archival_memory.html', memory=memory)
@@ -107,9 +128,9 @@ def get_agent_archival_memory(agent_id):
             # If archival memory doesn't exist, return empty result
             current_app.logger.info(f'No archival memory found for agent {agent_id}: {memory_error}')
             if request.headers.get('HX-Request'):
-                return render_template('components/archival_memory.html', memory={'archival_memory': []})
+                return render_template('components/archival_memory.html', memory=[])
             else:
-                return jsonify({'archival_memory': []})
+                return jsonify([])
     except Exception as e:
         current_app.logger.error(f'Error fetching archival memory: {e}')
         return jsonify({'error': 'Error fetching archival memory'}), 500

@@ -128,19 +128,19 @@ class TestValidators:
         messages = [
             {
                 'id': 'msg-1',
-                'messageType': MESSAGE_TYPE['USER_MESSAGE'],
+                'message_type': MESSAGE_TYPE['USER_MESSAGE'],
                 'content': 'Hello',
                 'date': 1640995200000
             },
             {
                 'id': 'msg-2',
-                'messageType': MESSAGE_TYPE['SYSTEM_MESSAGE'],
+                'message_type': MESSAGE_TYPE['SYSTEM_MESSAGE'],
                 'content': 'System message',
                 'date': 1640995210000
             },
             {
                 'id': 'msg-3',
-                'messageType': MESSAGE_TYPE['ASSISTANT_MESSAGE'],
+                'message_type': MESSAGE_TYPE['ASSISTANT_MESSAGE'],
                 'content': 'Hi!',
                 'date': 1640995220000
             }
@@ -148,20 +148,20 @@ class TestValidators:
         
         filtered = filter_messages(messages)
         assert len(filtered) == 2
-        assert all(msg['messageType'] != MESSAGE_TYPE['SYSTEM_MESSAGE'] for msg in filtered)
+        assert all(msg['message_type'] != MESSAGE_TYPE['SYSTEM_MESSAGE'] for msg in filtered)
     
     def test_filter_messages_removes_heartbeat(self):
         """Test message filtering removes heartbeat messages"""
         messages = [
             {
                 'id': 'msg-1',
-                'messageType': MESSAGE_TYPE['USER_MESSAGE'],
+                'message_type': MESSAGE_TYPE['USER_MESSAGE'],
                 'content': '{"type": "heartbeat"}',
                 'date': 1640995200000
             },
             {
                 'id': 'msg-2',
-                'messageType': MESSAGE_TYPE['USER_MESSAGE'],
+                'message_type': MESSAGE_TYPE['USER_MESSAGE'],
                 'content': 'Normal message',
                 'date': 1640995210000
             }
@@ -176,13 +176,13 @@ class TestValidators:
         messages = [
             {
                 'id': 'msg-1',
-                'messageType': MESSAGE_TYPE['USER_MESSAGE'],
+                'message_type': MESSAGE_TYPE['USER_MESSAGE'],
                 'content': 'Hello',
                 'date': 1640995200000
             },
             {
                 'id': 'msg-2',
-                'messageType': MESSAGE_TYPE['ASSISTANT_MESSAGE'],
+                'message_type': MESSAGE_TYPE['ASSISTANT_MESSAGE'],
                 'content': 'Hi!',
                 'date': 1640995210000
             }

@@ -70,35 +70,35 @@ class TestFixtures:
         return [
             {
                 'id': 'msg-1',
-                'messageType': 'user_message',
+                'message_type': 'user_message',
                 'content': 'Hello, I need help with my account',
                 'date': 1640995200000,
                 'agentId': 'agent-1'
             },
             {
                 'id': 'msg-2',
-                'messageType': 'assistant_message',
+                'message_type': 'assistant_message',
                 'content': 'Hello! I\'d be happy to help you with your account. What specific issue are you experiencing?',
                 'date': 1640995260000,
                 'agentId': 'agent-1'
             },
             {
                 'id': 'msg-3',
-                'messageType': 'user_message',
+                'message_type': 'user_message',
                 'content': 'I can\'t log in to my account',
                 'date': 1640995320000,
                 'agentId': 'agent-1'
             },
             {
                 'id': 'msg-4',
-                'messageType': 'assistant_message',
+                'message_type': 'assistant_message',
                 'content': 'I understand you\'re having trouble logging in. Let me help you troubleshoot this. Have you tried resetting your password?',
                 'date': 1640995380000,
                 'agentId': 'agent-1'
             },
             {
                 'id': 'msg-5',
-                'messageType': 'system_message',
+                'message_type': 'system_message',
                 'content': 'System: Agent memory updated with login troubleshooting context',
                 'date': 1640995400000,
                 'agentId': 'agent-1'
@@ -207,7 +207,7 @@ class TestFixtures:
             'large_message_list': [
                 {
                     'id': f'msg-{i}',
-                    'messageType': 'user_message' if i % 2 == 0 else 'assistant_message',
+                    'message_type': 'user_message' if i % 2 == 0 else 'assistant_message',
                     'content': f'Test message {i}',
                     'date': 1640995200000 + (i * 1000)
                 }
@@ -371,7 +371,7 @@ class MockLettaServer:
         user_message = messages[-1]
         new_message = {
             'id': f'msg-{len(self.messages) + 1}',
-            'messageType': 'user_message',
+            'message_type': 'user_message',
             'content': user_message['content'],
             'date': int(datetime.now().timestamp() * 1000),
             'agentId': agent_id
@@ -381,7 +381,7 @@ class MockLettaServer:
         # Generate AI response
         ai_response = {
             'id': f'msg-{len(self.messages) + 1}',
-            'messageType': 'assistant_message',
+            'message_type': 'assistant_message',
             'content': f"AI response to: {user_message['content']}",
             'date': int(datetime.now().timestamp() * 1000),
             'agentId': agent_id
