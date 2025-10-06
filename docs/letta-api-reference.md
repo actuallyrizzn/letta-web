@@ -1,3 +1,8 @@
+<!--
+Letta API Reference Documentation
+Copyright (C) 2025 Letta Chatbot Contributors
+Licensed under CC-BY-SA 4.0
+-->
 
 # Letta Notes
 

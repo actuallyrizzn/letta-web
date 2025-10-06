@@ -1,3 +1,9 @@
+<!--
+Letta Chatbot Flask Conversion Plan
+Copyright (C) 2025 Letta Chatbot Contributors
+Licensed under CC-BY-SA 4.0
+-->
+
 # Flask Conversion Project Plan
 
 ## Overview

@@ -1,3 +1,9 @@
+<!--
+Letta Chatbot Testing Guide
+Copyright (C) 2025 Letta Chatbot Contributors
+Licensed under CC-BY-SA 4.0
+-->
+
 # 🧪 Comprehensive Test Suite Documentation
 
 ## Overview

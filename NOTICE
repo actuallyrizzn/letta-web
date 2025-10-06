@@ -1,0 +1,147 @@
+Letta Chatbot - Flask Edition
+Copyright (C) 2025 Letta Chatbot Contributors
+
+This project consists of software code and documentation, each licensed separately:
+
+CODE LICENSE (AGPLv3)
+=====================
+All software code in this project (including but not limited to Python files,
+JavaScript files, configuration scripts, and executable code) is licensed under
+the GNU Affero General Public License version 3.0 or later.
+
+See LICENSE file for the full text of the GNU AGPLv3.
+
+This means:
+- You can use, modify, and distribute the code freely
+- If you modify and deploy the software as a network service, you must make
+  your modified source code available to users of that service
+- Any derivative works must also be licensed under AGPLv3
+- The software is provided "as is" without warranty
+
+Full license: https://www.gnu.org/licenses/agpl-3.0.txt
+
+DOCUMENTATION LICENSE (CC-BY-SA 4.0)
+=====================================
+All documentation in this project (including but not limited to README files,
+Markdown documents, guides, tutorials, and API documentation) is licensed under
+the Creative Commons Attribution-ShareAlike 4.0 International License.
+
+See LICENSE-DOCUMENTATION file for details.
+
+This means:
+- You can share and adapt the documentation freely
+- You must give appropriate credit
+- If you remix or transform the documentation, you must distribute your
+  contributions under the same CC-BY-SA 4.0 license
+- You may not apply additional restrictions
+
+Full license: https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+LICENSE HEADERS
+===============
+All code files include a conspicuous AGPLv3 license header:
+
+    """
+    Letta Chatbot - [Module Name]
+    Copyright (C) 2025 Letta Chatbot Contributors
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    """
+
+All documentation files include a CC-BY-SA 4.0 license header:
+
+    <!--
+    [Document Title]
+    Copyright (C) 2025 Letta Chatbot Contributors
+    Licensed under CC-BY-SA 4.0
+    -->
+
+FILE CATEGORIZATION
+===================
+Code files (AGPLv3):
+- *.py (Python source files)
+- *.js (JavaScript files)
+- *.html (HTML templates with embedded logic)
+- *.css (CSS stylesheets)
+- *.sh (Shell scripts)
+- Configuration files with executable logic
+
+Documentation files (CC-BY-SA 4.0):
+- *.md (Markdown documents)
+- *.txt (Plain text documentation)
+- README files
+- CONTRIBUTING files
+- LICENSE files themselves
+- Documentation in docs/ directory
+
+THIRD-PARTY COMPONENTS
+======================
+This project uses the following third-party components, each under their
+own licenses:
+
+Python Dependencies (see requirements.txt):
+- Flask: BSD-3-Clause License
+- Gunicorn: MIT License
+- Requests: Apache 2.0 License
+- (See requirements.txt for complete list)
+
+JavaScript/CSS Libraries:
+- HTMX: BSD-2-Clause License
+- Tailwind CSS: MIT License
+- Alpine.js: MIT License
+
+All third-party licenses are compatible with AGPLv3.
+
+CONTRIBUTION
+============
+By contributing to this project, you agree that your contributions will be
+licensed under the same licenses as the project (AGPLv3 for code, CC-BY-SA 4.0
+for documentation).
+
+You also certify that you have the right to submit the contribution under
+these licenses.
+
+See CONTRIBUTING.md for more information.
+
+CONTACT
+=======
+For licensing questions or inquiries, please:
+- Open an issue: https://github.com/your-org/letta-chatbot-example/issues
+- Email: legal@example.com
+
+ACKNOWLEDGMENTS
+===============
+This project builds upon:
+- Letta AI platform (https://letta.ai)
+- Flask web framework
+- HTMX for dynamic interactions
+- Tailwind CSS for styling
+- The open source community
+
+Thank you to all contributors and the broader open source community.
+
+---
+
+Letta Chatbot is free software: you can redistribute it and/or modify it under
+the terms of the GNU Affero General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>.
+

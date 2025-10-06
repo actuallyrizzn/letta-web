@@ -1,3 +1,9 @@
+<!--
+Letta Chatbot Flask Version Documentation
+Copyright (C) 2025 Letta Chatbot Contributors
+Licensed under CC-BY-SA 4.0
+-->
+
 # Letta Chatbot - Flask Version
 
 A Flask-based chatbot application that provides a web interface for interacting with Letta AI agents.
@@ -166,4 +172,11 @@ python -m pytest tests/ -v
 
 ## License
 
-Same as original Letta Chatbot Template.
+This project is dual-licensed:
+
+- **Code (Python, JavaScript, etc.)**: [GNU Affero General Public License v3.0](../LICENSE)
+- **Documentation (Markdown, text files, etc.)**: [Creative Commons Attribution-ShareAlike 4.0](../LICENSE-DOCUMENTATION)
+
+Copyright (C) 2025 Letta Chatbot Contributors
+
+See the [main README](../README.md#license) for full license details.
