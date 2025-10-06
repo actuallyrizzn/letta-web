@@ -8,7 +8,13 @@ Licensed under CC-BY-SA 4.0
 
 A modern, full-featured Flask-based chatbot application providing an intuitive web interface for interacting with Letta AI agents. Built with Flask, HTMX, and Tailwind CSS for a responsive, real-time chat experience.
 
-![Letta Chatbot Screenshot](flask_app_screenshot.png)
+[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Flask](https://img.shields.io/badge/flask-3.0+-green.svg)](https://flask.palletsprojects.com/)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
+[![Docs: CC-BY-SA](https://img.shields.io/badge/Docs-CC--BY--SA%204.0-lightgrey.svg)](LICENSE-DOCUMENTATION)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
+![Letta Chatbot Interface](docs/flask_app_screenshot_clean.png)
 
 ## 🌟 Features
 

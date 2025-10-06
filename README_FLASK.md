@@ -8,6 +8,8 @@ Licensed under CC-BY-SA 4.0
 
 A Flask-based chatbot application that provides a web interface for interacting with Letta AI agents.
 
+![Letta Chatbot Interface](docs/flask_app_screenshot_clean.png)
+
 ## Features
 
 - **Multi-agent Support** - Create and manage multiple AI agents
