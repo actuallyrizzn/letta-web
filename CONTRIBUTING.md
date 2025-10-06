@@ -2,7 +2,7 @@
 
 <!--
 Letta Chatbot Contributing Guide
-Copyright (C) 2025 Letta Chatbot Contributors
+Copyright (C) 2025 Mark Hopkins
 Licensed under CC-BY-SA 4.0
 -->
 
@@ -43,7 +43,7 @@ We will not tolerate harassment, discrimination, or toxic behavior of any kind.
 
 ### Find Something to Work On
 
-1. Check the [issue tracker](https://github.com/your-org/letta-chatbot-example/issues)
+1. Check the [issue tracker](https://github.com/actuallyrizzn/letta-web/issues)
 2. Look for issues labeled `good first issue` or `help wanted`
 3. Read existing discussions and pull requests
 4. Join our community channels (Discord, Discussions)
@@ -61,11 +61,11 @@ We will not tolerate harassment, discrimination, or toxic behavior of any kind.
 
 ```bash
 # Fork the repository on GitHub, then clone your fork
-git clone https://github.com/YOUR_USERNAME/letta-chatbot-example.git
-cd letta-chatbot-example
+git clone https://github.com/YOUR_USERNAME/letta-web.git
+cd letta-web
 
 # Add upstream remote
-git remote add upstream https://github.com/original-org/letta-chatbot-example.git
+git remote add upstream https://github.com/actuallyrizzn/letta-web.git
 ```
 
 ### 2. Create Virtual Environment
@@ -200,7 +200,7 @@ mypy app/ --ignore-missing-imports
 ```python
 """
 Letta Chatbot - Module Name
-Copyright (C) 2025 Letta Chatbot Contributors
+Copyright (C) 2025 Mark Hopkins
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -422,7 +422,7 @@ All documentation files must include the CC-BY-SA license header:
 ```markdown
 <!--
 Letta Chatbot Documentation Title
-Copyright (C) 2025 Letta Chatbot Contributors
+Copyright (C) 2025 Mark Hopkins
 Licensed under CC-BY-SA 4.0
 -->
 ```
@@ -576,10 +576,10 @@ Any other relevant information.
 
 ### Communication Channels
 
-- **GitHub Issues**: Bug reports and feature requests
-- **GitHub Discussions**: Questions and community discussion
+- **GitHub Issues**: [Bug reports and feature requests](https://github.com/actuallyrizzn/letta-web/issues)
+- **GitHub Discussions**: [Questions and community discussion](https://github.com/actuallyrizzn/letta-web/discussions)
 - **Discord**: Real-time chat and support
-- **Email**: maintainers@example.com
+- **Contact**: Via GitHub issues or discussions
 
 ### Getting Help
 

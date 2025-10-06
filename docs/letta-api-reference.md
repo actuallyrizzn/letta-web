@@ -1,6 +1,6 @@
 <!--
 Letta API Reference Documentation
-Copyright (C) 2025 Letta Chatbot Contributors
+Copyright (C) 2025 Mark Hopkins
 Licensed under CC-BY-SA 4.0
 -->
 

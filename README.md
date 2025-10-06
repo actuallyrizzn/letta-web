@@ -2,7 +2,7 @@
 
 <!--
 Letta Chatbot Documentation
-Copyright (C) 2025 Letta Chatbot Contributors
+Copyright (C) 2025 Mark Hopkins
 Licensed under CC-BY-SA 4.0
 -->
 
@@ -58,8 +58,8 @@ A modern, full-featured Flask-based chatbot application providing an intuitive w
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-org/letta-chatbot-example.git
-   cd letta-chatbot-example
+   git clone https://github.com/actuallyrizzn/letta-web.git
+   cd letta-web
    ```
 
 2. **Create virtual environment**
@@ -418,7 +418,7 @@ This project is dual-licensed:
 - **Code (Python, JavaScript, etc.)**: [GNU Affero General Public License v3.0](LICENSE)
 - **Documentation (Markdown, text files, etc.)**: [Creative Commons Attribution-ShareAlike 4.0](LICENSE-DOCUMENTATION)
 
-Copyright (C) 2025 Letta Chatbot Contributors
+Copyright (C) 2025 Mark Hopkins
 
 ## 🙏 Acknowledgments
 
@@ -431,8 +431,8 @@ Copyright (C) 2025 Letta Chatbot Contributors
 ## 📞 Support
 
 - **Documentation**: [docs/](docs/)
-- **Issues**: [GitHub Issues](https://github.com/your-org/letta-chatbot-example/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-org/letta-chatbot-example/discussions)
+- **Issues**: [GitHub Issues](https://github.com/actuallyrizzn/letta-web/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/actuallyrizzn/letta-web/discussions)
 - **Letta Discord**: [Join the community](https://discord.gg/letta)
 
 ## 🗺️ Roadmap

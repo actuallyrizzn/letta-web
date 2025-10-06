@@ -1,6 +1,6 @@
 <!--
 Letta Chatbot Flask Version Documentation
-Copyright (C) 2025 Letta Chatbot Contributors
+Copyright (C) 2025 Mark Hopkins
 Licensed under CC-BY-SA 4.0
 -->
 
@@ -30,8 +30,8 @@ A Flask-based chatbot application that provides a web interface for interacting 
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd letta-chatbot-example
+   git clone https://github.com/actuallyrizzn/letta-web.git
+   cd letta-web
    ```
 
 2. **Set up virtual environment**
@@ -179,6 +179,6 @@ This project is dual-licensed:
 - **Code (Python, JavaScript, etc.)**: [GNU Affero General Public License v3.0](../LICENSE)
 - **Documentation (Markdown, text files, etc.)**: [Creative Commons Attribution-ShareAlike 4.0](../LICENSE-DOCUMENTATION)
 
-Copyright (C) 2025 Letta Chatbot Contributors
+Copyright (C) 2025 Mark Hopkins
 
 See the [main README](../README.md#license) for full license details.

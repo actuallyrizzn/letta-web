@@ -1,5 +1,5 @@
 Letta Chatbot - Flask Edition
-Copyright (C) 2025 Letta Chatbot Contributors
+Copyright (C) 2025 Mark Hopkins
 
 This project consists of software code and documentation, each licensed separately:
 
@@ -43,7 +43,7 @@ All code files include a conspicuous AGPLv3 license header:
 
     """
     Letta Chatbot - [Module Name]
-    Copyright (C) 2025 Letta Chatbot Contributors
+    Copyright (C) 2025 Mark Hopkins
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -63,7 +63,7 @@ All documentation files include a CC-BY-SA 4.0 license header:
 
     <!--
     [Document Title]
-    Copyright (C) 2025 Letta Chatbot Contributors
+    Copyright (C) 2025 Mark Hopkins
     Licensed under CC-BY-SA 4.0
     -->
 
@@ -117,8 +117,8 @@ See CONTRIBUTING.md for more information.
 CONTACT
 =======
 For licensing questions or inquiries, please:
-- Open an issue: https://github.com/your-org/letta-chatbot-example/issues
-- Email: legal@example.com
+- Open an issue: https://github.com/actuallyrizzn/letta-web/issues
+- Start a discussion: https://github.com/actuallyrizzn/letta-web/discussions
 
 ACKNOWLEDGMENTS
 ===============

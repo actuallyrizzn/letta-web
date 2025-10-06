@@ -1,6 +1,6 @@
 <!--
 Letta Chatbot Flask Conversion Plan
-Copyright (C) 2025 Letta Chatbot Contributors
+Copyright (C) 2025 Mark Hopkins
 Licensed under CC-BY-SA 4.0
 -->
 
@@ -183,7 +183,7 @@ Convert React components to Flask templates:
 
 ### Flask Application Structure
 ```
-letta-chatbot-example/          # Project root (Flask app)
+letta-web/                      # Project root (Flask app)
 ├── node/                       # Original Next.js code (preserved)
 │   ├── src/
 │   ├── package.json
